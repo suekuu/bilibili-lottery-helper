@@ -4,3 +4,4 @@ changeWiFi.py
 test.py
 data.csv
 subscribe.csv
+*.csv
