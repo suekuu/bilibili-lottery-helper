@@ -5,7 +5,7 @@ includes = ['jinja2.ext', 'jinja2']  # add jinja2.ext here
 
 setup(
     name='bilibili lottery helper',
-    version='0.4',
+    version='1.0',
     description='bilibili lottery helper',
     # Add includes to the options
     options={'build_exe': {'include_files': includefiles, 'includes': includes}},

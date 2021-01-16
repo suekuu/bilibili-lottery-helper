@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+    <title>info</title>
+
+  <link rel="shortcut icon" href="/static/ico/favicon.ico">
+
+  <!-- Custom fonts for this template-->
+  <link href="../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="../../static/css/sb-admin-2.min.css" rel="stylesheet">
+<script>
+    function lotteryAlert()
+    {
+        alert("点击”确定“将搜索新增的抽奖动态，请耐心等待...\n首次搜索将耗费较长时间\n搜索期间不要刷新或进行任何操作，结束后将自动跳转");
+    }
+  </script>
+  <script>
+    function deleteAlert()
+    {
+        alert("点击”确定“将删除所有已开奖的转发动态并取关设奖的up主\n系统已经自动记录了未使用本助手之前关注的所有up主，这些up主不会被取关\n前后端交互还不太会... 如果有希望保留的up主，请自行在subscribe.csv中添加\n由于b站限制过快的操作速度，设置为随机1秒~10秒删除一条。结束后自动跳转");
+    }
+  </script>
+  <script>
+    function repostAlert()
+    {
+        alert("点击”确定“将转发所有抽奖动态\n前后端交互还不太会.. 不想抽的奖请自行到data.csv中，把是否已转发列标为-1\n由于b站限制过快的转发速度，设置为随机30秒~3分钟转发一条。请耐心等待，结束后自动跳转");
+    }
+  </script>
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url_for("home") }}">
+        <div class="sidebar-brand-text mx-3">Bilibili 抽奖助手</div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item active">
+        <a class="nav-link" href="{{ url_for("home") }}">
+          <i class="fas fa-fw fa-hospital-symbol"></i>
+          <span>主页</span></a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+        <!-- Nav Item - Admissions Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for("lottery") }}" onclick="lotteryAlert()">
+          <i class="fas fa-fw fa-calendar-plus"></i>
+          <span>搜索抽奖</span>
+{#          <input type="button"  >#}
+        </a>
+      </li>
+
+      <!-- Nav Item - Patients Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for("record") }}">
+          <i class="fas fa-fw fa-heart"></i>
+          <span>抽奖记录</span>
+        </a>
+      </li>
+      <!-- Nav Item - Prescription Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for("repost") }}" onclick="repostAlert()">
+          <i class="fas fa-fw fa-stethoscope"></i>
+          <span>一键转发</span>
+        </a>
+      </li>
+
+      <!-- Nav Item - Admissions Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for("unfollow_and_delrepo") }}" onclick="deleteAlert()">
+          <i class="fas fa-fw fa-users"></i>
+          <span>一键清除</span>
+        </a>
+      </li>
+      <!-- Nav Item - Admissions Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for("info") }}">
+          <i class="fas fa-fw fa-users"></i>
+          <span>常见问题</span>
+        </a>
+      </li>
+      <!-- Divider -->
+      <hr class="sidebar-divider d-none d-md-block">
+
+      <!-- Sidebar Toggler (Sidebar) -->
+      <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+      </div>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+
+            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+            <li class="nav-item dropdown no-arrow d-sm-none">
+              <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-search fa-fw"></i>
+              </a>
+              <!-- Dropdown - Messages -->
+              <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+                <form class="form-inline mr-auto w-100 navbar-search">
+                  <div class="input-group">
+                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <button class="btn btn-primary" type="button">
+                        <i class="fas fa-search fa-sm"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </li>
+
+            <!-- Nav Item - User Information -->
+            <li class="nav-item dropdown no-arrow">
+                <a class="dropdown-item" href="{{ url_for("index") }}" data-toggle="modal" data-target="#logoutModal">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Logout
+                </a>
+             </li>
+
+          </ul>
+
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <h4 class="h3 mb-4 text-gray-800">1. 网页有时候会崩，最好的解决方法就是重新登录</h4>
+          <h4 class="h3 mb-4 text-gray-800">2. 如果显示操作频繁，或者b站返回了错误代码，那就多等一会再操作</h4>
+          <h4 class="h3 mb-4 text-gray-800">3. cookie在重新登录、浏览器清除缓存等操作之后是会变化的. 登录时并不会检查是否正确，如果后续操作出现报错，有可能就是cookie变了，请及时更改sessdata和csrf</h4>
+          <h4 class="h3 mb-4 text-gray-800">4. 程序目录下有几个csv文件，都挺重要的。想起来的话就备份一下吧，万一出错了呢</h4>
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Bilibili 抽奖助手 2020-2021</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="{{ url_for("index") }}">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="../../static/vendor/jquery/jquery.min.js"></script>
+  <script src="../../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="../../static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="../../static/js/sb-admin-2.min.js"></script>
+
+</body>
+
+</html>
