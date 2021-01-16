@@ -1,0 +1,8 @@
+selenium==3.141.0
+pandas==1.2.0
+Flask_WTF==0.14.3
+Flask==1.1.2
+bilibili_api==2.1.4
+WTForms==2.3.3
+beautifulsoup4==4.9.3
+cx_Freeze==6.5.1
