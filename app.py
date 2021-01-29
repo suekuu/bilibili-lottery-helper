@@ -44,7 +44,7 @@ def home():
     df = BLottery.readcsv(file_name='data')
     if df.empty:
         return render_template('sb/index.html', total=0, new_lottery_number=0, new_lottery=[],
-                               today_closed_lottery_number=0, today_closed_lottery=[], all = 0)
+                               today_closed_lottery_number=0, today_closed_lottery=[], all=0)
     else:
         alllottery = len(df)
         total_repost_lottery = df[df['是否已转发'] == 1]
@@ -59,7 +59,8 @@ def home():
         new_lottery_num = len(new_lottery)
         new_lottery = new_lottery.iterrows()
 
-        return render_template('sb/index.html', total=total, new_lottery_number=new_lottery_num, new_lottery=new_lottery,
+        return render_template('sb/index.html', total=total, new_lottery_number=new_lottery_num,
+                               new_lottery=new_lottery,
                                today_closed_lottery_number=today_closed_lottery_number,
                                today_closed_lottery=today_closed_lottery, all=alllottery)
 
@@ -88,8 +89,20 @@ def unfollow_and_delrepo():
 
 @app.route('/repost')
 def repost():
-    num = BLottery.repost()
-    return render_template('sb/repost.html', num=num)
+    df = BLottery.readcsv(file_name='data')
+    to_be_reposted = df[df['是否已转发'] == 0]
+    value = []
+    for item in to_be_reposted.iterrows():
+        value.append(str(item[1][0]) + ',' + str(item[1][1]))
+
+    return render_template('sb/repost.html', lottery=to_be_reposted.iterrows(), value=value)
+
+
+@app.route('/repost/result', methods=['POST'])
+def repost_res():
+    to_be_reposted = request.form.getlist('repost')
+    num = BLottery.repost_list(to_be_reposted)
+    return render_template('sb/repostRes.html', num=num)
 
 
 @app.route('/info')
@@ -100,5 +113,3 @@ def info():
 if __name__ == '__main__':
     webbrowser.open("http://127.0.0.1:5000", new=0, autoraise=True)
     app.run(debug=True)
-
-
