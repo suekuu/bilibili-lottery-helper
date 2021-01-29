@@ -329,30 +329,53 @@ class BiliLottery:
                       '众所周知是抽奖有黑幕的，如果没有敢不敢抽到我', '看看我吧', '求一个！哈哈哈', '转发动态', '我的我的还是我的', 'ヾ(•ω•`)o',
                       '\\(@^0^@)/', '(｡･∀･)ﾉﾞ嗨', '']
         df = self.readcsv('data')
-        sub = self.readcsv('subscribe')
         to_be_reposted = df
         num = 0
         length = len(repostword) - 1
         for item in to_be_reposted.iterrows():
             if item[1][8] == 0:
                 rid = item[1][0]
-                if not sub[sub['uid'] == item[1][1]].empty:
-                    dynamic.repost(dynamic_id=rid, text=repostword[random.randint(0, length)],
-                                   verify=self.verify)  # 只转发
-                    to_be_reposted.loc[to_be_reposted[to_be_reposted['rid'].isin([rid])].index[0], '是否已转发'] = '1'
-                else:
-                    user.set_subscribe(uid=item[1][1], verify=self.verify)  # 关注 + 转发
-                    to_be_reposted.loc[to_be_reposted[to_be_reposted['rid'].isin([rid])].index[0], '是否已转发'] = '1'
-                    dynamic.repost(dynamic_id=rid, text=repostword[random.randint(0, length)],
-                                   verify=self.verify)  # 转发
-                    user.move_user_subscribe_group(uid=item[1][1], group_ids=self.tagid, verify=self.verify)
+                user.set_subscribe(uid=item[1][1], verify=self.verify)  # 关注 + 转发
+                to_be_reposted.loc[to_be_reposted[to_be_reposted['rid'].isin([rid])].index[0], '是否已转发'] = '1'
+                dynamic.repost(dynamic_id=rid, text=repostword[random.randint(0, length)],
+                               verify=self.verify)  # 转发
+                user.move_user_subscribe_group(uid=item[1][1], group_ids=self.tagid, verify=self.verify)
                 time.sleep(random.randint(30, 180))
                 num = num + 1
         # print(to_be_reposted)
         to_be_reposted.to_csv("%s\\data.csv" % self.folder_path, index=False, encoding="GB18030", float_format='str')
-        df = self.readcsv('data')
+        # df = self.readcsv('data')
         # print('\n\n')
         # print(df)
+        return num
+
+    def repost_list(self, to_be_reposted):
+        random.seed()
+        repostword = ['感谢感谢！！！欧皇就是我本人 提前恭喜这个b     站用户', '大手笔', '希望中奖', '冲冲冲', '能邮过来让我康康吗',
+                      '别转了 昨晚up说内定我了', '中！', '热乎的', '好多人啊', '这么多中奖活动都抽过，虽然没有中过但从来没放弃',
+                      '从未中奖，从未放弃', '我可以拥有的！', '中一次呗', '万一呢', '祝我好运', '抽我！', '(=・ω・=)', '加油',
+                      '还走什么流程啊，直接寄不就好了？', '转转转', '就让我来当个分母吧', '我该选哪个呢', '我来', '试一试', '好耶！',
+                      '人与人的体质是不能相提并论的，我曾在极度愤怒的情况下暴转了一万条互动抽奖，又在极度暴怒的情况下成了柠檬精',
+                      '重在参与', '拉低中奖率', '啊这', '分母集合', '下次一定中', '欧克欧克', '中奖是不可能中奖的 这辈子都不可能的',
+                      '从未中，从未停', '中奖绝缘体', '好家伙', '老板大气', '我要白嫖', '我要', '这牛啊', '奥力给', '非酋9段的第1761！！！次实验',
+                      '我要中啦', '我最喜欢这个了,我也想要', '秋梨膏', '啊啊啊啊啊啊啊啊啊啊啊', '大家都散了吧，已经抽完了，是我的',
+                      '众所周知是抽奖有黑幕的，如果没有敢不敢抽到我', '看看我吧', '求一个！哈哈哈', '转发动态', '我的我的还是我的', 'ヾ(•ω•`)o',
+                      '\\(@^0^@)/', '(｡･∀･)ﾉﾞ嗨', '']
+        df = self.readcsv('data')
+        df.loc[df['是否已转发'] == 0, '是否已转发'] = -1
+        num = 0
+        length = len(repostword) - 1
+        for item in to_be_reposted:
+            rid = item.split(',')[0]
+            uid = item.split(',')[1]
+            user.set_subscribe(uid=uid, verify=self.verify)  # 关注 + 转发
+            df.loc[df[df['rid'].isin([int(rid)])].index[0], '是否已转发'] = 1
+            dynamic.repost(dynamic_id=rid, text=repostword[random.randint(0, length)],
+                           verify=self.verify)  # 转发
+            user.move_user_subscribe_group(uid=uid, group_ids=self.tagid, verify=self.verify)
+            time.sleep(random.randint(30, 180))
+            num = num + 1
+        df.to_csv("%s\\data.csv" % self.folder_path, index=False, encoding="GB18030", float_format='str')
         return num
 
     def get_subscribe(self):

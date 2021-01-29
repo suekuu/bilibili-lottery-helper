@@ -25,7 +25,7 @@
             <div class="panel-body">
                 <h4 style="color:#3273AB">uid: b站的用户id</h4>
                 <h4 style="color:#3273AB">sessdata&csrf: b站的登录cookie. 转发动态时，需要通过cookie登录自己的b站账号.</h4>
-                <h5 style="color:#000000">这两个值在重新登录、浏览器清除缓存等操作之后是会变化的. 登录时并不会检查是否正确，如果后续操作出现报错，有可能就是cookie变了</h5>
+                <h5 style="color:#000000">这两个值在重新登录b站主站(登录这个抽奖小助手不会影响)、浏览器清除缓存等操作之后是会变化的. 登录时并不会检查是否正确，如果后续操作出现报错，有可能就是cookie变了</h5>
                 <h4 style="color:#3273AB">tagid: b站关注分组的id. 所有因为抽奖而关注的up将被移到这个分组下，便于取关</h4>
             </div>
         </div>
@@ -41,20 +41,21 @@
         </div>
         <div id="collapseTwo" class="panel-collapse collapse">
         <div class="panel-body">
-            <h4 style="color:#3273AB">以Chrome为例</h4>
-            <h4>1. uid</h4>
-            <h5>在b站首页点击自己的头像，进入个人空间。网址最后的一串数字就是uid</h5>
-            <h6>例如：space.bilibili.com/433351，433351就是uid</h6>
-            <h4>2. sessdata&csrf</h4>
-            <h5>第一步：单击左上方的小锁🔒, 点击Cookie</h5>
+            <h3 style="color:#3273AB">以Chrome为例</h3>
+            <h3>1. uid</h3>
+            <h4>在b站首页点击自己的头像，进入个人空间。网址最后的一串数字就是uid</h4>
+            <h5>例如：space.bilibili.com/114514，114514就是uid</h5>
+            <h3>2. sessdata&csrf</h3>
+            <h4>第一步：单击左上方的小锁🔒, 点击Cookie</h4>
             <img src="/static/img/1.png">
-            <br><h5>第二步：在bilibili.com→Cookie下找到SESSDATA和bili_jct, 其中bili_jct就是csrf</h5>
-            <img src="/static/img/2.png">
-            <h4>3. tagid</h4>
-            <h5>第一步：在个人空间新建关注列表</h5>
-            <h5>第二步：点击刚刚创建的分组，网址最后的一串数字就是tagid</h5>
-            <h6>例如：https://space.bilibili.com/433351/fans/follow?tagid=329352，329352就是uid</h6>
-            <h6></h6>
+            <br><h4>第二步：在bilibili.com→Cookie下找到SESSDATA和bili_jct, 其中bili_jct就是csrf. 依次复制内容里那一串字符串到对应的框里即可</h4>
+            <img src="/static/img/21.png">
+            <img src="/static/img/22.png">
+            <img src="/static/img/23.png">
+            <h3>3. tagid</h3>
+            <h4>第一步：在个人空间新建关注列表</h4>
+            <h4>第二步：点击刚刚创建的分组，网址最后的一串数字就是tagid</h4>
+            <h5>例如：https://space.bilibili.com/114514/fans/follow?tagid=329352，329352就是uid</h5>
         </div>
         </div>
     </div>
