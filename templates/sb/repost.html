@@ -32,7 +32,7 @@
   <script>
     function repostAlert()
     {
-        alert("点击”确定“将转发所有选中抽奖动态\n由b站限制过快的转发速度，设置为随机30秒~3分钟转发一条。请耐心等待，结束后自动跳转");
+        alert("由于b站限制过快的转发速度，设置为随机30秒~3分钟转发一条。请耐心等待，结束后自动跳转");
     }
   </script>
 </head>
@@ -81,7 +81,7 @@
       </li>
       <!-- Nav Item - Prescription Menu -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for("repost") }}" onclick="repostAlert()">
+        <a class="nav-link collapsed" href="{{ url_for("repost") }}">
           <i class="fas fa-fw fa-stethoscope"></i>
           <span>一键转发</span>
         </a>
@@ -168,11 +168,12 @@
               <!-- DataTales Example -->
               <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">要抽哪些奖呢</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">一键抽奖</h6>
                 </div>
 
               <div class="card-body"></div>
                 <div class="card-body">
+                  <h6 class="m-0 font-weight-bold text-primary">请选择您想抽的奖</h6>
                   <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                       <thead>
@@ -205,7 +206,7 @@
                         {% endfor %}
                       </tbody>
                     </table>
-                    <button type="submit" class="btn btn-primary btn-icon-split">
+                    <button type="submit" class="btn btn-primary btn-icon-split" onclick="repostAlert()">
                       <span class="icon text-white-50">
                         <i class="fas fa-check"></i>
                       </span>
@@ -268,7 +269,7 @@
 
   <!-- Custom scripts for all pages-->
   <script src="../../static/js/sb-admin-2.min.js"></script>
-
+  </div>
 </body>
 
 </html>

@@ -31,12 +31,6 @@
         alert("点击”确定“将删除所有已开奖的转发动态并取关设奖的up主\n系统已经自动记录了未使用本助手之前关注的所有up主，这些up主不会被取关\n前后端交互还不太会... 如果有希望保留的up主，请自行在subscribe.csv中添加\n由于b站限制过快的操作速度，设置为随机1秒~10秒删除一条。结束后自动跳转");
     }
   </script>
-  <script>
-    function repostAlert()
-    {
-        alert("点击”确定“将转发所有选中抽奖动态\n由b站限制过快的转发速度，设置为随机30秒~3分钟转发一条。请耐心等待，结束后自动跳转");
-    }
-  </script>
 </head>
 
 <body id="page-top">
@@ -86,7 +80,7 @@
       </li>
       <!-- Nav Item - Prescription Menu -->
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ url_for("repost") }}" onclick="repostAlert()">
+        <a class="nav-link collapsed" href="{{ url_for("repost") }}">
           <i class="fas fa-fw fa-stethoscope"></i>
           <span>一键转发</span>
         </a>
