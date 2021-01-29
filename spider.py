@@ -357,51 +357,19 @@ class BiliLottery:
         return num
 
     def get_subscribe(self):
-        df = self.readcsv('subscribe')
-        if df.empty:
-            titlerow = ["uid", "用户名"]
-            self.createcsv('subscribe', titlerow)
-            f = user.get_followings(uid=self.uid, verify=self.verify)
-            for item in f:
-                self.writecsv("subscribe", [item['mid'], item['uname']])
-        else:
-            f = user.get_followings(uid=self.uid, verify=self.verify)
-            self.overwritecsv('subscribe', ["uid", "用户名"])
-            for item in f:
-                g = user.get_user_in_which_subscribe_groups(uid=item['mid'], verify=self.verify)
-                if g and (list(g.keys())[0] == '%s' % self.tagid):
-                    continue
-                self.writecsv('subscribe', [item['mid'], item['uname']])
+        f = user.get_followings(uid=self.uid, verify=self.verify)
+        self.overwritecsv('subscribe', ["uid", "用户名"])
+        for item in f:
+            g = user.get_user_in_which_subscribe_groups(uid=item['mid'], verify=self.verify)
+            if g and (list(g.keys())[0] == '%s' % self.tagid[0]):
+                continue
+            self.writecsv('subscribe', [item['mid'], item['uname']])
 
-# start_time = time.time()
+
 # basic = Basic()
 # path = basic.folder_path()
-# # # # Cookies = HandleCookies(folder_path=path)
-# # # # Cookies.createcookies(sessdata="084467ce%2C1618485377%2C34610*a1", csrf="bec50ef4e09d58d11ba2e99c8b07a732")
-# verify = basic.verify(sessdata="084467ce%2C1618485377%2C34610*a1", csrf="bec50ef4e09d58d11ba2e99c8b07a732")
+# verify = basic.verify(sessdata="4a6ceb3a%2C1626099556%2C7e8f7*11", csrf="e98cb389ea19df8d2b62d2f53d501ab3")
 # basicinfo = {'uid': 12311708, 'folder_path': path, 'verify': verify, 'tagid': [329352]}
-# # # # #
-# # # # getqualifieduser(basicinfo, range(10863684, 610100000))
-# # # #
-# # # #
-# # # # # t1 = threading.Thread(target=getqualifieduser, args=(basicinfo, range(10041641, 10050000)))
-# # # #
-# # # #
 # BLottery = BiliLottery(basicinfo)  # 创建类的实例
-
 # BLottery.get_subscribe()
-# df = BLottery.readcsv('data')
-# sub = BLottery.readcsv('subscribe')
-#
-# for line in df.iterrows():
-#     issub = sub[sub['uid'] == line[1][1]]
-#     if issub is None:
-#         user.cancel_subscribe(uid=line[1][1], verify=BLottery.verify)
-# num = num + 1
 
-# BLottery.get_lottery_using_api()
-# BLottery.get_dynamic()
-# #
-# # BLottery.unfollow()
-# end_time = time.time()
-# print(end_time - start_time)
