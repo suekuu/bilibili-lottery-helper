@@ -113,10 +113,10 @@ class BiliLottery:
         origin_existed_lottery = self.readcsv('data')
         if origin_existed_lottery.empty:
             titlerow = ["rid", "uid", "用户名", "开奖时间", "时间戳", "奖品", "设奖时间", "链接", "是否已转发", "是否已取关"]
-            BiliLottery.createcsv(self, 'data', titlerow)
+            self.createcsv('data', titlerow)
         new_lottery = []
         new_lottery_cnt = 0
-        ouser = BiliLottery.readcsv(self, 'officialuser')
+        ouser = self.readcsv('officialuser')
         uid_range = ouser['uid']
         uid_range = [928123, 394205865, 16794231]
 
@@ -179,8 +179,7 @@ class BiliLottery:
                             prize.append(Prize.get_text())
 
                         # dynamic.repost(dynamic_id=rid, verify=self.verify)      # 转发
-                        BiliLottery.writecsv(self, 'data',
-                                             [rid, uid, nickname, draw_time, timestamp, draw_condition, prize, 0])
+                        self.writecsv('data', [rid, uid, nickname, draw_time, timestamp, draw_condition, prize, 0])
                         new_lottery.append([rid, uid, nickname, draw_time, timestamp, draw_condition, prize])
                         new_lottery_cnt += 1
                         # print([uid, rid, nickname, draw_time, draw_condition, prize])
