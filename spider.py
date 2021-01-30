@@ -225,13 +225,11 @@ class BiliLottery:
     def get_lottery_using_api(self):
         df = self.readcsv('data')
         if df.empty:
-            limit_a = 1
-            titlerow = ["rid", "uid", "用户名", "开奖时间", "时间戳", "奖品", "设奖时间", "链接", "是否已转发", "是否已取关"]
+            titlerow = ["rid", "uid", "用户名", "开奖时间", "时间戳", "奖品", "设奖时间", "链接", "是否已转发", "是否已取关", "转发rid"]
             self.createcsv('data', titlerow)
             self.get_subscribe()
-        else:
-            limit_a = 1
-        articles = user.get_articles(uid=2295698, limit=limit_a)
+
+        articles = user.get_articles(uid=2295698, limit=1)
         # print(articles)
         cvs = []
         for i in range(0, len(articles)):
