@@ -202,6 +202,8 @@ class BiliLottery:
     def unfollow_and_delrepo(self):
         self.get_subscribe()
         df = self.readcsv('data')
+        if '转发rid' not in df.columns:
+            df['转发rid'] = ''
         sub = self.readcsv('subscribe')
         nowstamp = int(time.time())
         closed_lottery = df[(nowstamp >= df['时间戳']) & (df['是否已取关'] == 0) & (df['是否已转发'] == 1)]
