@@ -225,7 +225,7 @@ class BiliLottery:
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")  # 执行JavaScript实现网页下拉倒底部
             time.sleep(0.5)  # 等待0.5秒，页面加载出来再执行下拉操作
 
-    def unfollow_and_delrepo(self):  # 删除动态的功能还没有实现
+    def unfollow_and_delrepo(self):
         self.get_subscribe()
         df = self.readcsv('data')
         sub = self.readcsv('subscribe')
@@ -238,6 +238,8 @@ class BiliLottery:
             if issub.empty:
                 user.cancel_subscribe(uid=line[1][1], verify=self.verify)
                 df.loc[df[df['uid'].isin([line[1][1]])].index[0], '是否已取关'] = '1'
+                if line[1][10]:
+                    dynamic.delete(line[1][10], verify=self.verify)
                 num = num + 1
                 time.sleep(random.randint(1, 3))
         df.to_csv("%s\\data.csv" % self.folder_path, index=False, encoding="GB18030", float_format='str')
@@ -259,17 +261,13 @@ class BiliLottery:
         for i in range(0, len(articles)):
             cvs.append(articles[i]['id'])
         driver = self.setdriver()
-        rids = []
         descriptions = []
         for cv in cvs:
             web_url = 'https://www.bilibili.com/read/cv%d' % cv  # 要访问的网页地址
             driver.get(web_url)
             time.sleep(0.5)
             descriptions.append(BeautifulSoup(driver.page_source, 'lxml').find(class_='article-holder').get_text())
-            # hrefs = BeautifulSoup(driver.page_source, 'lxml').find_all(class_='article-link')
-            # for href in hrefs:
-            #     pattern = re.compile(r'(?<=https://t.bilibili.com/)\d*')
-            #     rids.append(pattern.findall(href.get_text())[0])
+
         gifts = []
         due_time = []
         rids = []
@@ -290,7 +288,6 @@ class BiliLottery:
                 soup = BeautifulSoup(driver.page_source, 'lxml').find_all(class_='c-pointer',
                                                                           href=re.compile("space.bilibili.com"),
                                                                           target="_blank")
-                # print(soup)
                 if not soup:
                     continue
                 # 最后一项是我们要的 用户名在get_text里， uid在href里
@@ -306,9 +303,6 @@ class BiliLottery:
                 self.writecsv("data",
                               [rids[i][j], uid, username, due_time[i][j], timestamp, gifts[i][j], todaystamp, web_url,
                                0, 0])
-
-                # user.move_user_subscribe_group(uid=uid, group_ids=self.tagid, verify=self.verify)
-                # print(uid)
                 time.sleep(1)
 
         driver.quit()
@@ -363,6 +357,8 @@ class BiliLottery:
                       '\\(@^0^@)/', '(｡･∀･)ﾉﾞ嗨', '']
         df = self.readcsv('data')
         df.loc[df['是否已转发'] == 0, '是否已转发'] = -1
+        if '转发rid' not in df.columns:
+            df['转发rid'] = ''
         num = 0
         length = len(repostword) - 1
         for item in to_be_reposted:
@@ -373,6 +369,9 @@ class BiliLottery:
             dynamic.repost(dynamic_id=rid, text=repostword[random.randint(0, length)],
                            verify=self.verify)  # 转发
             user.move_user_subscribe_group(uid=uid, group_ids=self.tagid, verify=self.verify)
+            repost_rid = user.get_dynamic(self.uid, limit=1, verify=self.verify)
+            repost_rid = repost_rid[0]['desc']['rid']
+            df.loc[df[df['rid'].isin([int(rid)])].index[0], '转发rid'] = repost_rid
             time.sleep(random.randint(30, 180))
             num = num + 1
         df.to_csv("%s\\data.csv" % self.folder_path, index=False, encoding="GB18030", float_format='str')
@@ -394,4 +393,3 @@ class BiliLottery:
 # basicinfo = {'uid': 12311708, 'folder_path': path, 'verify': verify, 'tagid': [329352]}
 # BLottery = BiliLottery(basicinfo)  # 创建类的实例
 # BLottery.get_subscribe()
-
