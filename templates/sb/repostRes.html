@@ -26,7 +26,7 @@
   <script>
     function deleteAlert()
     {
-        alert("点击”确定“将删除所有已开奖的转发动态并取关设奖的up主\n系统已经自动记录了未使用本助手之前关注的所有up主，这些up主不会被取关\n前后端交互还不太会... 如果有希望保留的up主，请自行在subscribe.csv中添加\n由于b站限制过快的操作速度，设置为随机1秒~10秒删除一条。结束后自动跳转");
+        alert("点击”确定“将删除所有已开奖的转发动态并取关设奖的up主\n系统只会取关您为抽奖而设立的分组下的up，其他分组内的up主不会被取关\n由于b站限制过快的操作速度，设置为随机1秒~3秒删除一条。结束后自动跳转");
     }
   </script>
 </head>
@@ -77,7 +77,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="{{ url_for("repost") }}">
           <i class="fas fa-fw fa-stethoscope"></i>
-          <span>一键转发</span>
+          <span>开始抽奖</span>
         </a>
       </li>
 

@@ -199,26 +199,27 @@ class BiliLottery:
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")  # 执行JavaScript实现网页下拉倒底部
             time.sleep(0.5)  # 等待0.5秒，页面加载出来再执行下拉操作
 
-    def unfollow_and_delrepo(self):
+    def unfollow_and_delrepo(self):  # 不知道为什么用pandas打开转发rid总是会被读错 tmd烦死了
         self.get_subscribe()
-        df = self.readcsv('data')
+        df = pd.read_csv('%s\\%s.csv' % (self.folder_path, 'data'), encoding='GB18030', dtype='str')
+        df = pd.DataFrame(df)
         if '转发rid' not in df.columns:
             df['转发rid'] = ''
         sub = self.readcsv('subscribe')
-        nowstamp = int(time.time())
-        closed_lottery = df[(nowstamp >= df['时间戳']) & (df['是否已取关'] == 0) & (df['是否已转发'] == 1)]
-        # print(closed_lottery)
+        nowstamp = str(time.time())
+        closed_lottery = df[(nowstamp >= df['时间戳']) & (df['是否已取关'] == '0') & (df['是否已转发'] == '1')]
         num = 0
         for line in closed_lottery.iterrows():
             issub = sub[sub['uid'] == line[1][1]]
+            print(issub)
             if issub.empty:
                 user.cancel_subscribe(uid=line[1][1], verify=self.verify)
                 df.loc[df[df['uid'].isin([line[1][1]])].index[0], '是否已取关'] = '1'
-                if line[1][10]:
-                    dynamic.delete(line[1][10], verify=self.verify)
+                if pd.notnull(line[1][10]):
+                    dynamic.delete(int(line[1][10]), verify=self.verify)
                 num = num + 1
                 time.sleep(random.randint(1, 3))
-        df.to_csv("%s\\data.csv" % self.folder_path, index=False, encoding="GB18030", float_format='str')
+        df.to_csv("%s\\data.csv" % self.folder_path, index=False, encoding="GB18030")
         # print(num)
         return num
 
@@ -282,7 +283,7 @@ class BiliLottery:
         driver.quit()
         existed_lottery = self.readcsv('data')
         existed_lottery = existed_lottery.drop_duplicates('rid')
-        existed_lottery.to_csv("%s\\data.csv" % self.folder_path, index=False, encoding="GB18030")
+        existed_lottery.to_csv("%s\\data.csv" % self.folder_path, index=False, encoding="GB18030", float_format='str')
 
     # def repost(self):
     #     random.seed()
@@ -330,6 +331,7 @@ class BiliLottery:
                       '众所周知是抽奖有黑幕的，如果没有敢不敢抽到我', '看看我吧', '求一个！哈哈哈', '转发动态', '我的我的还是我的', 'ヾ(•ω•`)o',
                       '\\(@^0^@)/', '(｡･∀･)ﾉﾞ嗨', '']
         df = self.readcsv('data')
+        sub = self.readcsv('subscribe')
         df.loc[df['是否已转发'] == 0, '是否已转发'] = -1
         if '转发rid' not in df.columns:
             df['转发rid'] = ''
@@ -338,17 +340,24 @@ class BiliLottery:
         for item in to_be_reposted:
             rid = item.split(',')[0]
             uid = item.split(',')[1]
-            user.set_subscribe(uid=uid, verify=self.verify)  # 关注 + 转发
-            df.loc[df[df['rid'].isin([int(rid)])].index[0], '是否已转发'] = 1
-            dynamic.repost(dynamic_id=rid, text=repostword[random.randint(0, length)],
-                           verify=self.verify)  # 转发
-            user.move_user_subscribe_group(uid=uid, group_ids=self.tagid, verify=self.verify)
+            if sub[sub["uid"].isin([int(uid)])].empty:      # 用户不在非抽奖列表中，关注 + 转发
+                user.set_subscribe(uid=uid, verify=self.verify)
+                df.loc[df[df['rid'].isin([int(rid)])].index[0], '是否已转发'] = 1
+                dynamic.repost(dynamic_id=rid, text=repostword[random.randint(0, length)],
+                               verify=self.verify)  # 转发
+                user.move_user_subscribe_group(uid=uid, group_ids=self.tagid, verify=self.verify)
+            else:                                           # 在，只转发
+                df.loc[df[df['rid'].isin([int(rid)])].index[0], '是否已转发'] = 1
+                dynamic.repost(dynamic_id=rid, text=repostword[random.randint(0, length)],
+                               verify=self.verify)
+            time.sleep(1)
             repost_rid = user.get_dynamic(self.uid, limit=1, verify=self.verify)
-            repost_rid = repost_rid[0]['desc']['rid']
-            df.loc[df[df['rid'].isin([int(rid)])].index[0], '转发rid'] = repost_rid
-            time.sleep(random.randint(30, 180))
+            repost_rid = repost_rid[0]['desc']['dynamic_id']
+            df.loc[df[df['rid'].isin([int(rid)])].index[0], '转发rid'] = str(repost_rid)
+            # time.sleep(random.randint(30, 180))
             num = num + 1
-        df.to_csv("%s\\data.csv" % self.folder_path, index=False, encoding="GB18030", float_format='str')
+        time.sleep(1)
+        df.to_csv("%s\\data.csv" % self.folder_path, index=False, encoding="GB18030")  # , float_format='str'
         return num
 
     def get_subscribe(self):
@@ -366,4 +375,13 @@ class BiliLottery:
 # verify = basic.verify(sessdata="4a6ceb3a%2C1626099556%2C7e8f7*11", csrf="e98cb389ea19df8d2b62d2f53d501ab3")
 # basicinfo = {'uid': 12311708, 'folder_path': path, 'verify': verify, 'tagid': [329352]}
 # BLottery = BiliLottery(basicinfo)  # 创建类的实例
+# repost_rid = user.get_dynamic(12311708, limit=1, verify=verify)
+# repost_rid = repost_rid[0]['desc']['dynamic_id']
+# print(repost_rid)
+# df = BLottery.readcsv('data')
+# # print(df[df['rid'].isin([int(485955676732677313)])])
+# df.loc[df[df['rid'].isin([int(485955676732677313)])].index[0], '转发rid'] = repost_rid
+# for line in df.iterrows():
+#     print(line)
+# df.to_csv("%s\\data.csv" % path, index=False, encoding="GB18030", float_format='str')
 # BLottery.get_subscribe()

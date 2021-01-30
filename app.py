@@ -1,7 +1,7 @@
 import datetime
 # import os
 import time
-
+import pandas as pd
 from flask import Flask, render_template, request, redirect, url_for
 from forms import *
 from spider import Basic, BiliLottery
@@ -52,7 +52,7 @@ def home():
         todaystamp = int(time.mktime(datetime.date.today().timetuple()))
         # todaystamp = 1610769000
         tomorrowstamp = todaystamp + 86400
-        today_closed_lottery = df[(todaystamp <= df['时间戳']) & (df['时间戳'] < tomorrowstamp)]
+        today_closed_lottery = df[(todaystamp <= df['时间戳']) & (df['时间戳'] < tomorrowstamp) & (df['是否已转发'] == 1)]
         today_closed_lottery_number = len(today_closed_lottery)
         today_closed_lottery = today_closed_lottery.iterrows()
         new_lottery = df[df['设奖时间'] == todaystamp]
