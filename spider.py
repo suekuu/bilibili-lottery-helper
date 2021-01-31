@@ -199,7 +199,7 @@ class BiliLottery:
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")  # 执行JavaScript实现网页下拉倒底部
             time.sleep(0.5)  # 等待0.5秒，页面加载出来再执行下拉操作
 
-    def unfollow_and_delrepo(self):  # 不知道为什么用pandas打开转发rid总是会被读错 tmd烦死了
+    def unfollow_and_delrepo(self):
         self.get_subscribe()
         df = pd.read_csv('%s\\%s.csv' % (self.folder_path, 'data'), encoding='GB18030', dtype='str')
         df = pd.DataFrame(df)
@@ -277,7 +277,7 @@ class BiliLottery:
                 todaystamp = int(time.mktime(datetime.date.today().timetuple()))
                 self.writecsv("data",
                               [rids[i][j], uid, username, due_time[i][j], timestamp, gifts[i][j], todaystamp, web_url,
-                               0, 0])
+                               0, 0, ''])
                 time.sleep(1)
 
         driver.quit()
@@ -354,7 +354,7 @@ class BiliLottery:
             repost_rid = user.get_dynamic(self.uid, limit=1, verify=self.verify)
             repost_rid = repost_rid[0]['desc']['dynamic_id']
             df.loc[df[df['rid'].isin([int(rid)])].index[0], '转发rid'] = str(repost_rid)
-            # time.sleep(random.randint(30, 180))
+            time.sleep(random.randint(30, 180))
             num = num + 1
         time.sleep(1)
         df.to_csv("%s\\data.csv" % self.folder_path, index=False, encoding="GB18030")  # , float_format='str'
