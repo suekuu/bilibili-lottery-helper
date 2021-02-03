@@ -210,7 +210,7 @@ class BiliLottery:
         closed_lottery = df[(nowstamp >= df['时间戳']) & (df['是否已取关'] == '0') & (df['是否已转发'] == '1')]
         num = 0
         for line in closed_lottery.iterrows():
-            issub = sub[sub['uid'] == line[1][1]]
+            issub = sub[sub['uid'] == int(line[1][1])]
             print(issub)
             if issub.empty:
                 user.cancel_subscribe(uid=line[1][1], verify=self.verify)
