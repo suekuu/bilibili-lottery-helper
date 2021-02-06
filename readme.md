@@ -5,7 +5,7 @@ b站抽奖小助手
 自动白嫖动态抽奖，开奖后自动取关
 
 # How to use it?
-release v1.0
+release
 
 exe.win-amd64-3.7/app.exe，打开直接运行
 
