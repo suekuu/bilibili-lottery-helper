@@ -209,19 +209,24 @@ class BiliLottery:
         nowstamp = str(time.time())
         closed_lottery = df[(nowstamp >= df['时间戳']) & (df['是否已取关'] == '0') & (df['是否已转发'] == '1')]
         num = 0
+        delup = []
         for line in closed_lottery.iterrows():
+            df.loc[line[0], '是否已取关'] = '1'
+            if pd.notnull(line[1][10]):
+                dynamic.delete(int(line[1][10]), verify=self.verify)
             issub = sub[sub['uid'] == int(line[1][1])]
             print(issub)
             if issub.empty:
-                user.cancel_subscribe(uid=line[1][1], verify=self.verify)
-                df.loc[df[df['uid'].isin([line[1][1]])].index[0], '是否已取关'] = '1'
-                if pd.notnull(line[1][10]):
-                    dynamic.delete(int(line[1][10]), verify=self.verify)
-                num = num + 1
-                time.sleep(random.randint(1, 3))
+                survive_lottery = df[(df['uid'] == str(line[1][1])) & (nowstamp < df['时间戳'])]   # 该up主是否还存在未过期的抽奖
+                if survive_lottery.empty:   # 如果没有未过期的抽奖，取关
+                    user.cancel_subscribe(uid=line[1][1], verify=self.verify)
+                    num = num + 1
+                    delup.append(line[1][2])
+                    time.sleep(random.randint(1, 3))
+
         df.to_csv("%s\\data.csv" % self.folder_path, index=False, encoding="GB18030")
         # print(num)
-        return num
+        return [num, delup]
 
     def get_lottery_using_api(self):
         df = self.readcsv('data')

@@ -68,7 +68,7 @@ def home():
 @app.route('/lottery')
 def lottery():
     BLottery.get_lottery_using_api()
-    return redirect(url_for('record'))
+    return redirect(url_for('home'))
 
 
 @app.route('/record')
@@ -83,8 +83,8 @@ def record():
 
 @app.route('/unfollow_and_delrepo')
 def unfollow_and_delrepo():
-    num = BLottery.unfollow_and_delrepo()
-    return render_template('sb/unfollow_and_delrepo.html', num=num)
+    [num, delup] = BLottery.unfollow_and_delrepo()
+    return render_template('sb/unfollow_and_delrepo.html', num=num, delup=delup)
 
 
 @app.route('/repost')

@@ -160,12 +160,41 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
-
           <!-- Page Heading -->
-          <h1 class="h3 mb-4 text-gray-800">清除结束</h1>
-          <h1 class="h3 mb-4 text-gray-800">共取关{{ num }}位up主 </h1>
-
+          <h1 class="h3 mb-4 text-gray-800">清除结束, 共取关{{ num }}位up主</h1>
         </div>
+          <!-- Area Chart -->
+            <div class="col-xl-12 col-lg-7">
+              <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                  <h6 class="m-0 font-weight-bold text-primary">取关列表</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                  <thead>
+                    <tr>
+                        <th>up主</th>
+                    </tr>
+                  </thead>
+                  <tfoot>
+                    <tr>
+                        <th>up主</th>
+                    </tr>
+                  </tfoot>
+                    <tbody>
+                    {% for item in delup %}
+                    <tr>
+                      <td>{{ item }}</td>
+                    </tr>
+                    {% endfor %}
+
+                  </tbody>
+                    </table>
+                  </div>
+            </div></div>
+            <!-- Area Chart -->
         <!-- /.container-fluid -->
 
       </div>
